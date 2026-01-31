@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
 

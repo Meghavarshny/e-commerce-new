@@ -21,6 +21,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import SellerProductsPage from "./pages/SellerProductsPage";
 import SellerOrdersPage from "./pages/SellerOrdersPage";
+import SellerPricingPage from "./pages/SellerPricingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
@@ -46,20 +47,28 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/products/:id" element={<ProductDetailPage />} />
-                <Route path="/cart" element={<CartPage />} />
+
+                {/* Buyer Routes */}
+                <Route
+                  path="/cart"
+                  element={
+                    <ProtectedRoute roles={["buyer"]}>
+                      <CartPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/checkout"
                   element={
-                    <ProtectedRoute roles={["buyer", "seller"]}>
+                    <ProtectedRoute roles={["buyer"]}>
                       <CheckoutPage />
                     </ProtectedRoute>
                   }
                 />
-
                 <Route
                   path="/orders"
                   element={
-                    <ProtectedRoute roles={["buyer", "seller"]}>
+                    <ProtectedRoute roles={["buyer"]}>
                       <OrdersPage />
                     </ProtectedRoute>
                   }
@@ -72,6 +81,8 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+
+                {/* Common Protected Routes */}
                 <Route
                   path="/dashboard"
                   element={
@@ -89,7 +100,7 @@ function App() {
                   }
                 />
 
-                {/* Seller routes */}
+                {/* Seller Routes */}
                 <Route
                   path="/seller/products"
                   element={
@@ -103,6 +114,14 @@ function App() {
                   element={
                     <ProtectedRoute roles={["seller"]}>
                       <SellerOrdersPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/seller/pricing"
+                  element={
+                    <ProtectedRoute roles={["seller"]}>
+                      <SellerPricingPage />
                     </ProtectedRoute>
                   }
                 />

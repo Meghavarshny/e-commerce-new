@@ -108,32 +108,51 @@ export default function Navbar() {
 
           {/* Desktop User Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <NavLink
-              to="/cart"
-              className={({ isActive }) =>
-                `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
-              }
-            >
-              Cart
-            </NavLink>
-            {user?.role === "buyer" && (
-              <NavLink
-                to="/wishlist"
-                className={({ isActive }) =>
-                  `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
-                }
-              >
-                Wishlist
-              </NavLink>
+            {/* Common Links */}
+            {user?.role !== "seller" && (
+              <>
+                <NavLink
+                  to="/cart"
+                  className={({ isActive }) =>
+                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                  }
+                >
+                  Cart
+                </NavLink>
+                {/* Wishlist only for logged in buyers (or users with no role yet, assuming buyer) */}
+                <NavLink
+                  to="/wishlist"
+                  className={({ isActive }) =>
+                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                  }
+                >
+                  Wishlist
+                </NavLink>
+                <NavLink
+                  to="/orders"
+                  className={({ isActive }) =>
+                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                  }
+                >
+                  Orders
+                </NavLink>
+              </>
             )}
-            <NavLink
-              to="/orders"
-              className={({ isActive }) =>
-                `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
-              }
-            >
-              Orders
-            </NavLink>
+
+            {/* Seller Specific Links */}
+            {user?.role === "seller" && (
+              <>
+                <NavLink
+                  to="/seller/pricing"
+                  className={({ isActive }) =>
+                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                  }
+                >
+                  Pricing
+                </NavLink>
+              </>
+            )}
+
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
@@ -142,6 +161,7 @@ export default function Navbar() {
             >
               Dashboard
             </NavLink>
+
             {user ? (
               <>
                 <span className="px-2 py-1 rounded bg-gray-100 text-sm">
@@ -210,35 +230,55 @@ export default function Navbar() {
                 >
                   Products
                 </NavLink>
-                <NavLink
-                  to="/cart"
-                  className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
-                  }
-                  onClick={handleLinkClick}
-                >
-                  Cart
-                </NavLink>
-                {user?.role === "buyer" && (
-                  <NavLink
-                    to="/wishlist"
-                    className={({ isActive }) =>
-                      `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
-                    }
-                    onClick={handleLinkClick}
-                  >
-                    Wishlist
-                  </NavLink>
+
+                {/* Mobile Links for Buyers */}
+                {user?.role !== "seller" && (
+                  <>
+                    <NavLink
+                      to="/cart"
+                      className={({ isActive }) =>
+                        `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
+                      }
+                      onClick={handleLinkClick}
+                    >
+                      Cart
+                    </NavLink>
+                    <NavLink
+                      to="/wishlist"
+                      className={({ isActive }) =>
+                        `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
+                      }
+                      onClick={handleLinkClick}
+                    >
+                      Wishlist
+                    </NavLink>
+                    <NavLink
+                      to="/orders"
+                      className={({ isActive }) =>
+                        `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
+                      }
+                      onClick={handleLinkClick}
+                    >
+                      Orders
+                    </NavLink>
+                  </>
                 )}
-                <NavLink
-                  to="/orders"
-                  className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
-                  }
-                  onClick={handleLinkClick}
-                >
-                  Orders
-                </NavLink>
+
+                {/* Mobile Links for Sellers */}
+                {user?.role === "seller" && (
+                  <>
+                    <NavLink
+                      to="/seller/pricing"
+                      className={({ isActive }) =>
+                        `px-4 py-2 rounded-lg ${isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"}`
+                      }
+                      onClick={handleLinkClick}
+                    >
+                      Pricing
+                    </NavLink>
+                  </>
+                )}
+
                 <NavLink
                   to="/dashboard"
                   className={({ isActive }) =>

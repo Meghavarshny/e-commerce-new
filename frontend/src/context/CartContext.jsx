@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import useNotification from "../hooks/useNotification";
+import Notification from "../components/Notification";
 
 const CartContext = createContext();
 
@@ -7,6 +9,8 @@ export function CartProvider({ children }) {
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : [];
   });
+
+  const { notification, showSuccess } = useNotification();
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -22,6 +26,7 @@ export function CartProvider({ children }) {
           )
         : [...prev, { ...product, quantity }],
     );
+    showSuccess(`Added ${product.name} to cart`);
   };
 
   const removeFromCart = (productId) => {
@@ -44,6 +49,13 @@ export function CartProvider({ children }) {
     <CartContext.Provider
       value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}
     >
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={notification.hideNotification}
+        />
+      )}
       {children}
     </CartContext.Provider>
   );

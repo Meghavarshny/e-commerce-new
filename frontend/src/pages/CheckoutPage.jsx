@@ -53,9 +53,15 @@ export default function CheckoutPage() {
       api
         .post("/payment/create-payment-intent", { amount: total })
         .then((res) => setClientSecret(res.data.clientSecret))
-        .catch((err) => console.error("Stripe Intent Error:", err));
+        .catch((err) => {
+          console.error("Stripe Intent Error:", err);
+          showNotification(
+            "Failed to initialize payment: " + err.message,
+            "error",
+          );
+        });
     }
-  }, [total, paymentMethod, api]);
+  }, [total, paymentMethod, api, showNotification]);
 
   // Validate shipping information
   const validateShipping = () => {
@@ -489,7 +495,9 @@ export default function CheckoutPage() {
                   />
                   <div>
                     <h4 className="font-medium text-gray-800">{item.name}</h4>
-                    <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                    <p className="text-sm text-gray-600">
+                      Qty: {item.quantity}
+                    </p>
                   </div>
                 </div>
                 <p className="font-medium">

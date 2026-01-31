@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import useApi from "../hooks/useApi";
+import useNotification from "../hooks/useNotification";
+import Notification from "./Notification";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const { api } = useApi();
+  const { notification, showSuccess, showError } = useNotification();
+
+  const handleAddToWishlist = async () => {
+    try {
+      await api.post(`/wishlist/${product._id}`);
+      showSuccess("Added to wishlist!");
+    } catch (err) {
+      showError(err.response?.data?.message || "Failed to add to wishlist");
+    }
+  };
   const truncateText = (text, maxLength) => {
     if (!text) return "";
     return text.length > maxLength
@@ -45,6 +61,28 @@ export default function ProductCard({ product }) {
             >
               View Details
             </Link>
+            {user?.role === "buyer" && (
+              <button
+                onClick={handleAddToWishlist}
+                className="p-2.5 rounded-xl bg-pink-50 text-pink-500 hover:bg-pink-100 transition duration-200 shadow-sm hover:shadow active:scale-95"
+                title="Add to wishlist"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </button>
+            )}
             <button
               onClick={() => addToCart(product, 1)}
               className="p-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg active:scale-95"
@@ -60,6 +98,13 @@ export default function ProductCard({ product }) {
               </svg>
             </button>
           </div>
+          {notification && (
+            <Notification
+              message={notification.message}
+              type={notification.type}
+              onClose={notification.hideNotification}
+            />
+          )}
           {/* Rating display */}
           <div className="flex items-center pt-2 border-t border-gray-50">
             <div className="flex text-yellow-400">

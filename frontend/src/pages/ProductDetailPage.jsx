@@ -8,15 +8,29 @@ import Loader from "../components/Loader";
 import Review from "../components/Review";
 import Notification from "../components/Notification";
 
+import useOrders from "../hooks/useOrders";
+
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { data: product, loading, error, refetch } = useApi(`/products/${id}`);
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { orders } = useOrders(); // Fetch orders to verify purchase
   const { notification, showNotification, hideNotification, showError } =
     useNotification();
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
   const [userHasReviewed, setUserHasReviewed] = useState(false);
+
+  // Check if user has purchased the product
+  const hasPurchased =
+    user &&
+    orders?.some((order) =>
+      order.items.some((item) => {
+        const productId =
+          typeof item.product === "object" ? item.product._id : item.product;
+        return productId === id;
+      }),
+    );
 
   useEffect(() => {
     if (product && user) {
@@ -37,6 +51,11 @@ export default function ProductDetailPage() {
 
     if (!user) {
       showNotification("Please login to submit a review", "error");
+      return;
+    }
+
+    if (!hasPurchased) {
+      showError("You must purchase this product to leave a review");
       return;
     }
 

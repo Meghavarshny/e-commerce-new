@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import useApi from "../hooks/useApi";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
@@ -31,7 +32,12 @@ export default function SellerProductsPage() {
       const res = await api.get("/products");
       setProducts(
         res.data.filter(
-          (prod) => prod.seller === user.id || prod.seller === user._id,
+          (prod) =>
+            // Robust check: match string or object IDs, handle potential undefined
+            (prod.seller &&
+              (prod.seller === user.id || prod.seller === user._id)) ||
+            // Fallback: If product has NO seller (orphan), show it to allow claiming
+            !prod.seller,
         ),
       );
     } catch {
@@ -114,118 +120,217 @@ export default function SellerProductsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <h2 className="text-2xl font-bold mb-6">Your Products (Seller)</h2>
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Manage Products</h2>
+        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+          {products.length} Products
+        </span>
+      </div>
+
       {notification && (
         <Notification {...notification} onClose={hideNotification} />
       )}
 
-      <form
-        onSubmit={editingId ? handleUpdate : handleAdd}
-        className="border p-4 rounded bg-white shadow mb-8 flex flex-col gap-3 max-w-xl"
-      >
-        <input
-          name="name"
-          placeholder="Product Name"
-          value={form.name || ""}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="input input-bordered"
-          required
-        />
-        <input
-          name="description"
-          placeholder="Description"
-          value={form.description || ""}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="input input-bordered"
-        />
-        <input
-          name="price"
-          type="number"
-          min="0"
-          placeholder="Price (₹)"
-          value={form.price || ""}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
-          className="input input-bordered"
-          required
-        />
-        <input
-          name="image"
-          placeholder="Image URL"
-          value={form.image || ""}
-          onChange={(e) => setForm({ ...form, image: e.target.value })}
-          className="input input-bordered"
-        />
-        <input
-          name="category"
-          placeholder="Category"
-          value={form.category || ""}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          className="input input-bordered"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-semibold transition"
-        >
-          {editingId ? "Update Product" : "Add Product"}
-        </button>
-        {editingId && (
-          <button
-            type="button"
-            className="text-red-500 mt-2"
-            onClick={() => {
-              setEditingId(null);
-              setForm({
-                name: "",
-                description: "",
-                price: "",
-                image: "",
-                category: "",
-              });
-            }}
-          >
-            Cancel Edit
-          </button>
-        )}
-      </form>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Form */}
+        <div className="lg:col-span-1">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 sticky top-24">
+            <h3 className="text-lg font-semibold mb-4">
+              {editingId ? "Edit Product" : "Add New Product"}
+            </h3>
+            <form
+              onSubmit={editingId ? handleUpdate : handleAdd}
+              className="flex flex-col gap-4"
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Name
+                </label>
+                <input
+                  name="name"
+                  placeholder="e.g. Wireless Headphones"
+                  value={form.name || ""}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  required
+                />
+              </div>
 
-      {loading && <Loader />}
-      {products.length === 0 && (
-        <div className="text-gray-600">
-          No products found. Use the form above to add one.
-        </div>
-      )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {products.map((prod) => (
-          <div
-            key={prod._id}
-            className="border rounded p-4 shadow bg-white flex flex-col gap-2"
-          >
-            <img
-              src={prod.image}
-              alt={prod.name}
-              className="w-full h-32 object-cover rounded mb-3"
-            />
-            <h3 className="font-bold">{prod.name}</h3>
-            <div className="text-gray-600">{prod.description}</div>
-            <div className="font-mono text-blue-800">&#8377; {prod.price}</div>
-            <div className="text-xs text-gray-500">{prod.category}</div>
-            <div className="flex gap-2 mt-3">
-              <button
-                className="btn btn-blue"
-                onClick={() => handleEditInit(prod)}
-              >
-                Edit
-              </button>
-              <button
-                className="btn btn-red"
-                onClick={() => handleDelete(prod._id)}
-              >
-                Delete
-              </button>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Product details..."
+                  value={form.description || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  rows="3"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price (₹)
+                  </label>
+                  <input
+                    name="price"
+                    type="number"
+                    min="0"
+                    placeholder="0.00"
+                    value={form.price || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                  </label>
+                  <input
+                    name="category"
+                    placeholder="e.g. Electronics"
+                    value={form.category || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, category: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input
+                  name="image"
+                  placeholder="https://..."
+                  value={form.image || ""}
+                  onChange={(e) => setForm({ ...form, image: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`flex-1 py-2 px-4 rounded-lg text-white font-medium transition ${
+                    loading
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg translate-y-0 active:translate-y-0.5"
+                  }`}
+                >
+                  {loading ? "Saving..." : editingId ? "Update" : "Add Product"}
+                </button>
+                {editingId && (
+                  <button
+                    type="button"
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                    onClick={() => {
+                      setEditingId(null);
+                      setForm({
+                        name: "",
+                        description: "",
+                        price: "",
+                        image: "",
+                        category: "",
+                      });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
-        ))}
+        </div>
+
+        {/* Right Column: Product List */}
+        <div className="lg:col-span-2">
+          {loading && !products.length ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader />
+            </div>
+          ) : (
+            <>
+              {products.length === 0 ? (
+                <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
+                  <span className="text-4xl block mb-4">📦</span>
+                  <p>You haven't added any products yet.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {products.map((prod) => (
+                    <div
+                      key={prod._id}
+                      className="group bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+                    >
+                      <div className="relative aspect-video overflow-hidden bg-gray-100">
+                        <img
+                          src={
+                            prod.image ||
+                            "https://placehold.co/400x300?text=No+Image"
+                          }
+                          alt={prod.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-semibold shadow-sm">
+                          ₹{prod.price}
+                        </div>
+                      </div>
+
+                      <div className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-bold text-gray-900 truncate flex-1 pr-2">
+                            {prod.name}
+                          </h3>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                            {prod.category || "General"}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 line-clamp-2 mb-4 h-10">
+                          {prod.description || "No description provided."}
+                        </p>
+
+                        <div className="flex gap-2 border-t border-gray-100 pt-3">
+                          <Link
+                            to={`/products/${prod._id}`}
+                            className="flex-1 px-3 py-1.5 text-sm bg-green-50 text-green-700 rounded-lg hover:bg-green-100 font-medium transition text-center"
+                            target="_blank"
+                          >
+                            View
+                          </Link>
+                          <button
+                            onClick={() => handleEditInit(prod)}
+                            className="flex-1 px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(prod._id)}
+                            className="flex-1 px-3 py-1.5 text-sm bg-red-50 text-red-700 rounded-lg hover:bg-red-100 font-medium transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,26 +1,38 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export default function useNotification() {
   const [notification, setNotification] = useState(null);
 
-  const showNotification = (message, type = "success") => {
+  const showNotification = useCallback((message, type = "success") => {
     setNotification({ message, type });
     // Auto-hide after 4 seconds
     setTimeout(() => setNotification(null), 4000);
-  };
+  }, []);
 
-  const showSuccess = (message) => showNotification(message, "success");
-  const showError = (message) => showNotification(message, "error");
-  const showWarning = (message) => showNotification(message, "warning");
+  const showSuccess = useCallback(
+    (message) => showNotification(message, "success"),
+    [showNotification],
+  );
+  const showError = useCallback(
+    (message) => showNotification(message, "error"),
+    [showNotification],
+  );
+  const warning = useCallback(
+    (message) => showNotification(message, "warning"),
+    [showNotification],
+  );
 
-  const hideNotification = () => setNotification(null);
+  // Kept alias for backward compatibility if needed, though not strictly necessary if unused
+  const showWarning = warning;
 
-  return { 
-    notification, 
-    showNotification, 
-    showSuccess, 
-    showError, 
+  const hideNotification = useCallback(() => setNotification(null), []);
+
+  return {
+    notification,
+    showNotification,
+    showSuccess,
+    showError,
     showWarning,
-    hideNotification 
+    hideNotification,
   };
 }
