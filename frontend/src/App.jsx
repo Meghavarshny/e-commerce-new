@@ -26,9 +26,6 @@ import SellerPricingPage from "./pages/SellerPricingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
-
-const queryClient = new QueryClient();
-
 import SellerSidebar from "./components/SellerSidebar";
 
 const queryClient = new QueryClient();
