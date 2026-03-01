@@ -3,7 +3,7 @@ export default function CartItem({ item, onUpdate, onRemove }) {
     <div className="flex flex-col sm:flex-row items-start sm:items-center border-b border-gray-100 p-4 last:border-0 hover:bg-gray-50 transition-colors">
       <div className="w-full sm:w-24 flex-shrink-0">
         <img 
-          src={item.image || "https://placeholder.co/200x200"} 
+          src={item.image || "https://placehold.jp/200x200"} 
           alt={item.name} 
           className="w-full h-24 object-cover rounded-lg"
         />

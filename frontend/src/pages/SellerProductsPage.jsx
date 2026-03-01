@@ -121,9 +121,9 @@ export default function SellerProductsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Manage Products</h2>
-        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+      <div className="flex justify-between items-center mb-6 border-b-2 border-indigo-100 pb-4">
+        <h2 className="text-3xl font-bold text-indigo-900">Manage Products</h2>
+        <span className="bg-indigo-100 text-indigo-800 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
           {products.length} Products
         </span>
       </div>

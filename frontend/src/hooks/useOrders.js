@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import useApi from "./useApi";
+import { useAuth } from "../context/AuthContext";
 
 export default function useOrders() {
   const { api } = useApi();
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchOrders = useCallback(async () => {
+    if (!user) return;
     try {
       setLoading(true);
       const response = await api.get("/orders");
@@ -17,7 +20,7 @@ export default function useOrders() {
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, user]);
 
   const placeOrder = async (orderData) => {
     try {

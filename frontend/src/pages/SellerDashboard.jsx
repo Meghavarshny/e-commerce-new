@@ -34,190 +34,124 @@ export default function SellerDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
-          <p className="text-gray-600">
-            Overview for{" "}
-            <span className="font-semibold">
-              {user.restaurantName || user.name}
-            </span>
-          </p>
+    <div className="min-h-screen bg-transparent py-2">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-8">
+          <div>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Seller Console</h1>
+            <p className="text-slate-500 font-medium mt-1">
+              Performance overview for <span className="text-indigo-600 font-bold">{user.name}</span>
+            </p>
+          </div>
+          <div className="flex gap-3">
+             <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-sm font-bold text-slate-700">
+                📅 {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+             </div>
+             <Link to="/seller/products" className="px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-md shadow-indigo-200 text-sm font-bold hover:bg-indigo-700 transition">
+                + New Product
+             </Link>
+          </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard
             value={sellerProducts.length}
-            label="Your Products"
+            label="Inventory"
             link="/seller/products"
-            color="blue"
+            color="slate"
             icon="📦"
           />
           <StatCard
             value={sellerOrders.length}
-            label="Total Orders"
+            label="Orders"
             link="/seller/orders"
-            color="green"
-            icon="📊"
+            color="indigo"
+            icon="📈"
           />
           <StatCard
-            value={`₹ ${totalSales.toFixed(2)}`}
-            label="Total Revenue"
-            color="purple"
-            icon="💸"
+            value={`₹${totalSales.toFixed(0)}`}
+            label="Revenue"
+            color="emerald"
+            icon="💰"
           />
           <StatCard
             value={sellerProducts.filter((p) => p.stock > 0).length}
-            label="Active Listings"
-            color="yellow"
-            icon="✅"
+            label="Active"
+            color="amber"
+            icon="🟢"
           />
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <ActionCard
-            title="Manage Products"
-            icon="📝"
-            description="Add or edit products"
-            link="/seller/products"
-            color="blue"
-          />
-          <ActionCard
-            title="Manage Orders"
-            icon="📋"
-            description="Process incoming orders"
-            link="/seller/orders"
-            color="green"
-          />
-          <ActionCard
-            title="Comp. Pricing"
-            icon="📉"
-            description="Analyze market prices"
-            link="/seller/pricing"
-            color="purple"
-          />
-          <ActionCard
-            title="Seller Profile"
-            icon="🏪"
-            description="Store settings"
-            link="/profile"
-            color="indigo"
-          />
-        </div>
-
-        {/* Recent Activity Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Sales */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Recent Sales
-              </h3>
-              <Link
-                to="/seller/orders"
-                className="text-blue-600 hover:underline text-sm"
-              >
-                View All
-              </Link>
-            </div>
-            {sellerOrders.length > 0 ? (
-              <div className="space-y-4">
-                {sellerOrders.slice(0, 3).map((order) => {
-                  const sellerItems = order.items.filter(
-                    (item) =>
-                      item.seller === user.id || item.seller === user._id,
-                  );
-                  const orderValue = sellerItems.reduce(
-                    (sum, item) => sum + item.price * item.quantity,
-                    0,
-                  );
-
-                  return (
-                    <div
-                      key={order._id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
-                      <div>
-                        <div className="font-medium">
-                          #{order._id.slice(-6)}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          {new Date(order.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            order.status === "Delivered"
-                              ? "bg-green-100 text-green-800"
-                              : order.status === "Processing"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : order.status === "Shipped"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {order.status}
-                        </div>
-                        <div className="text-sm font-medium">
-                          ₹ {orderValue.toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+           {/* Recent Sales Table */}
+           <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                 <h3 className="font-bold text-slate-900">Recent Transactions</h3>
+                 <Link to="/seller/orders" className="text-xs font-bold text-indigo-600 hover:text-indigo-700">View All</Link>
               </div>
-            ) : (
-              <p className="text-gray-600 text-center py-4">No recent sales</p>
-            )}
-          </div>
-
-          {/* Top Products */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Top Products
-              </h3>
-              <Link
-                to="/seller/products"
-                className="text-blue-600 hover:underline text-sm"
-              >
-                View All
-              </Link>
-            </div>
-            {sellerProducts.length > 0 ? (
-              <div className="space-y-4">
-                {sellerProducts.slice(0, 3).map((product) => (
-                  <div
-                    key={product._id}
-                    className="flex items-center p-3 bg-gray-50 rounded-lg"
-                  >
-                    <img
-                      src={product.image || "https://placeholder.co/60x60"}
-                      alt={product.name}
-                      className="w-12 h-12 object-cover rounded mr-4"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{product.name}</div>
-                      <div className="text-sm text-gray-600">
-                        Stock: {product.stock || 0}
-                      </div>
-                    </div>
-                    <div className="text-right font-medium">
-                      ₹ {product.price?.toFixed(2)}
-                    </div>
-                  </div>
-                ))}
+              <div className="overflow-x-auto">
+                 <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
+                       <tr>
+                          <th className="px-6 py-4">Order ID</th>
+                          <th className="px-6 py-4">Date</th>
+                          <th className="px-6 py-4">Amount</th>
+                          <th className="px-6 py-4">Status</th>
+                       </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                       {sellerOrders.slice(0, 5).map(order => (
+                          <tr key={order._id} className="hover:bg-slate-50/50 transition-colors">
+                             <td className="px-6 py-4 font-bold text-slate-700">#{order._id.slice(-6)}</td>
+                             <td className="px-6 py-4 text-slate-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                             <td className="px-6 py-4 font-bold text-slate-900">₹{order.items.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2)}</td>
+                             <td className="px-6 py-4">
+                                <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                                   order.status === 'Delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                }`}>
+                                   {order.status}
+                                </span>
+                             </td>
+                          </tr>
+                       ))}
+                       {sellerOrders.length === 0 && (
+                          <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-400 font-medium">No transactions found</td></tr>
+                       )}
+                    </tbody>
+                 </table>
               </div>
-            ) : (
-              <p className="text-gray-600 text-center py-4">
-                No products listed
-              </p>
-            )}
-          </div>
+           </div>
+
+           {/* Quick Actions Sidebar */}
+           <div className="space-y-6">
+              <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl shadow-slate-200">
+                 <h4 className="font-bold mb-4 text-indigo-400 uppercase text-xs tracking-widest">Store Actions</h4>
+                 <div className="space-y-3">
+                    <Link to="/seller/products" className="flex items-center gap-3 p-3 bg-slate-800 rounded-xl hover:bg-slate-700 transition group">
+                       <span className="bg-slate-700 p-2 rounded-lg group-hover:bg-indigo-600 transition">📝</span>
+                       <div className="text-sm">
+                          <p className="font-bold">Add Products</p>
+                          <p className="text-[10px] text-slate-400">Expand your inventory</p>
+                       </div>
+                    </Link>
+                    <Link to="/seller/pricing" className="flex items-center gap-3 p-3 bg-slate-800 rounded-xl hover:bg-slate-700 transition group">
+                       <span className="bg-slate-700 p-2 rounded-lg group-hover:bg-indigo-600 transition">📈</span>
+                       <div className="text-sm">
+                          <p className="font-bold">Pricing Tool</p>
+                          <p className="text-[10px] text-slate-400">Analyze market rates</p>
+                       </div>
+                    </Link>
+                 </div>
+              </div>
+              
+              <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
+                 <h4 className="font-bold text-indigo-900 mb-2">Pro Tip</h4>
+                 <p className="text-xs text-indigo-700 leading-relaxed">
+                    Sellers who update their stock weekly see 25% more consistent sales. Keep your inventory fresh!
+                 </p>
+              </div>
+           </div>
         </div>
       </div>
     </div>
@@ -226,25 +160,21 @@ export default function SellerDashboard() {
 
 function StatCard({ value, label, link, color, icon }) {
   const colorStyles = {
-    blue: "bg-blue-50 border-blue-200 text-blue-700",
-    green: "bg-green-50 border-green-200 text-green-700",
-    red: "bg-red-50 border-red-200 text-red-700",
-    purple: "bg-purple-50 border-purple-200 text-purple-700",
-    yellow: "bg-yellow-50 border-yellow-200 text-yellow-700",
-    indigo: "bg-indigo-50 border-indigo-200 text-indigo-700",
+    slate: "bg-white border-slate-200 text-slate-900",
+    indigo: "bg-white border-slate-200 text-indigo-600",
+    emerald: "bg-white border-slate-200 text-emerald-600",
+    amber: "bg-white border-slate-200 text-amber-600",
   };
 
   const CardContent = (
-    <div className="flex items-center">
-      <div className="text-2xl mr-4">{icon}</div>
-      <div>
-        <div className="text-3xl font-bold">{value}</div>
-        <div className="text-sm font-medium">{label}</div>
-      </div>
+    <div className="flex flex-col">
+      <div className="text-2xl mb-2">{icon}</div>
+      <div className="text-3xl font-black tracking-tight">{value}</div>
+      <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">{label}</div>
     </div>
   );
 
-  const className = `block rounded-xl border p-6 hover:shadow-md transition ${colorStyles[color] || colorStyles.blue}`;
+  const className = `block rounded-2xl border p-6 transition-all hover:shadow-lg hover:-translate-y-1 ${colorStyles[color] || colorStyles.slate}`;
 
   if (link) {
     return (
@@ -255,26 +185,4 @@ function StatCard({ value, label, link, color, icon }) {
   }
 
   return <div className={className}>{CardContent}</div>;
-}
-
-function ActionCard({ title, icon, description, link, color }) {
-  const colorStyles = {
-    blue: "bg-blue-600 hover:bg-blue-700",
-    green: "bg-green-600 hover:bg-green-700",
-    red: "bg-red-600 hover:bg-red-700",
-    purple: "bg-purple-600 hover:bg-purple-700",
-    yellow: "bg-yellow-500 hover:bg-yellow-600",
-    indigo: "bg-indigo-600 hover:bg-indigo-700",
-  };
-
-  return (
-    <Link
-      to={link}
-      className={`block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition text-center ${colorStyles[color] || colorStyles.blue} text-white`}
-    >
-      <div className="text-3xl mb-2">{icon}</div>
-      <h3 className="font-semibold mb-1">{title}</h3>
-      <p className="text-sm opacity-90">{description}</p>
-    </Link>
-  );
 }

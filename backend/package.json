@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "seed": "node src/utils/seed.js",
     "build": "echo \"No build needed for this Node.js application\""
   },
   "keywords": [],
@@ -25,6 +26,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
+    "razorpay": "^2.9.6",
     "stripe": "^20.2.0",
     "zod": "^4.3.6"
   },

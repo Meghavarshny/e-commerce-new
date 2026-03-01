@@ -182,7 +182,7 @@ export default function WishlistPage() {
                     onClick={() => navigate(`/products/${product._id}`)}
                   >
                     <img 
-                      src={product.image || "https://placeholder.co/60x60"} 
+                      src={product.image || "https://placehold.jp/60x60"} 
                       alt={product.name} 
                       className="w-16 h-16 object-cover rounded mr-4"
                     />

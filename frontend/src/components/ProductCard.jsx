@@ -57,46 +57,56 @@ export default function ProductCard({ product }) {
           <div className="flex gap-2">
             <Link
               to={`/products/${product._id}`}
-              className="flex-1 text-center font-semibold px-4 py-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-100 transition duration-200 text-sm"
+              className="flex-1 text-center font-bold px-4 py-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition duration-200 text-sm border border-gray-100"
             >
               View Details
             </Link>
-            {user?.role === "buyer" && (
-              <button
-                onClick={handleAddToWishlist}
-                className="p-2.5 rounded-xl bg-pink-50 text-pink-500 hover:bg-pink-100 transition duration-200 shadow-sm hover:shadow active:scale-95"
-                title="Add to wishlist"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            
+            {/* Show shopping actions ONLY for buyers or guests */}
+            {(!user || user.role === "buyer") && (
+              <>
+                <button
+                  onClick={handleAddToWishlist}
+                  className="p-2.5 rounded-xl bg-pink-50 text-pink-500 hover:bg-pink-100 transition duration-200 shadow-sm hover:shadow active:scale-95 border border-pink-100"
+                  title="Add to wishlist"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => addToCart(product, 1)}
+                  className="p-2.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition duration-200 shadow-md hover:shadow-lg active:scale-95"
+                  title="Add to cart"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l.586-1.172a2 2 0 012.32-1.173L10 10l2.059-4.118a2 2 0 012.32-1.173l1.358 5.43-.893.892L14.82 7.172A1 1 0 0014 8H6.414l-.305-1.222a.997.997 0 00-.01-.042L4.22 3H3a1 1 0 00-1-1z" />
+                  </svg>
+                </button>
+              </>
             )}
-            <button
-              onClick={() => addToCart(product, 1)}
-              className="p-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg active:scale-95"
-              title="Add to cart"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l.586-1.172a2 2 0 012.32-1.173L10 10l2.059-4.118a2 2 0 012.32-1.173l1.358 5.43-.893.892L14.82 7.172A1 1 0 0014 8H6.414l-.305-1.222a.997.997 0 00-.01-.042L4.22 3H3a1 1 0 00-1-1z" />
-              </svg>
-            </button>
+
+            {user?.role === "seller" && (
+              <div className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-widest text-center rounded-xl border border-indigo-100 flex items-center justify-center">
+                Inventory View
+              </div>
+            )}
           </div>
           {notification && (
             <Notification

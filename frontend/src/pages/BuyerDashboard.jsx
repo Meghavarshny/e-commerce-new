@@ -33,90 +33,95 @@ export default function BuyerDashboard() {
     ) || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Account</h1>
-          <p className="text-gray-600">
-            Welcome back, <span className="font-semibold">{user.name}</span>
-          </p>
+    <div className="min-h-screen bg-transparent py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 bg-emerald-600 rounded-3xl p-8 text-white shadow-xl shadow-emerald-200/50 relative overflow-hidden group">
+          <div className="relative z-10">
+            <h1 className="text-4xl font-black tracking-tight mb-2">My Account</h1>
+            <p className="text-emerald-50 text-lg opacity-90">
+              Welcome back, <span className="font-bold underline decoration-2 underline-offset-4">{user.name}</span>! Ready for some shopping?
+            </p>
+          </div>
+          {/* Decorative element */}
+          <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
+          <div className="absolute right-20 top-0 w-32 h-32 bg-emerald-400 rounded-full opacity-10 group-hover:-translate-y-5 transition-transform duration-500"></div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <StatCard
             value={orders?.length || 0}
             label="Total Orders"
             link="/orders"
-            color="blue"
-            icon="📦"
+            color="emerald"
+            icon="🛍️"
           />
           <StatCard
             value={wishlist?.length || 0}
             label="Wishlist Items"
             link="/wishlist"
-            color="red"
+            color="pink"
             icon="❤️"
           />
           <StatCard
             value={orders?.filter((o) => o.status === "Delivered").length || 0}
             label="Delivered"
-            color="green"
-            icon="✅"
+            color="teal"
+            icon="✨"
           />
           <StatCard
             value={`₹ ${totalSpent.toFixed(2)}`}
             label="Total Spent"
-            color="purple"
-            icon="💰"
+            color="amber"
+            icon="💎"
           />
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <ActionCard
             title="My Orders"
             icon="📦"
-            description="Track your recent orders"
+            description="Track packages"
             link="/orders"
-            color="blue"
+            color="emerald"
           />
           <ActionCard
             title="Wishlist"
-            icon="❤️"
-            description="View saved items"
+            icon="💖"
+            description="Saved items"
             link="/wishlist"
-            color="red"
+            color="pink"
           />
           <ActionCard
             title="Profile"
             icon="👤"
-            description="Manage your account"
+            description="Account settings"
             link="/profile"
-            color="green"
+            color="teal"
           />
           <ActionCard
-            title="Shop Now"
-            icon="🛍️"
-            description="Browse products"
+            title="Explore"
+            icon="🌈"
+            description="Browse items"
             link="/products"
-            color="indigo"
+            color="amber"
           />
         </div>
 
         {/* Recent Activity Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Recent Orders */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-emerald-50 p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-black text-gray-900">
                 Recent Orders
               </h3>
               <Link
                 to="/orders"
-                className="text-blue-600 hover:underline text-sm"
+                className="text-emerald-600 hover:text-emerald-700 font-bold text-sm bg-emerald-50 px-4 py-2 rounded-full transition-colors"
               >
-                View All
+                View All &rarr;
               </Link>
             </div>
             {recentOrders.length > 0 ? (
@@ -124,29 +129,29 @@ export default function BuyerDashboard() {
                 {recentOrders.map((order) => (
                   <div
                     key={order._id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100/50 hover:bg-emerald-50 transition-colors"
                   >
                     <div>
-                      <div className="font-medium">#{order._id.slice(-6)}</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-black text-gray-900">#{order._id.slice(-6)}</div>
+                      <div className="text-xs font-bold text-emerald-600/70 uppercase tracking-wider mt-1">
                         {new Date(order.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="text-right">
                       <div
-                        className={`px-2 py-1 rounded-full text-xs ${
+                        className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 inline-block shadow-sm ${
                           order.status === "Delivered"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-emerald-500 text-white"
                             : order.status === "Processing"
-                              ? "bg-yellow-100 text-yellow-800"
+                              ? "bg-amber-500 text-white"
                               : order.status === "Shipped"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-500 text-white"
                         }`}
                       >
                         {order.status}
                       </div>
-                      <div className="text-sm font-medium">
+                      <div className="text-lg font-black text-gray-900">
                         ₹{" "}
                         {order.items
                           .reduce(
@@ -160,21 +165,24 @@ export default function BuyerDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-center py-4">No recent orders</p>
+              <div className="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                 <span className="text-4xl block mb-2">🛒</span>
+                 <p className="text-gray-500 font-medium">No orders yet. Time to shop!</p>
+              </div>
             )}
           </div>
 
           {/* Recent Wishlist */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Wishlist Items
+          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-pink-50 p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-black text-gray-900">
+                Wishlist
               </h3>
               <Link
                 to="/wishlist"
-                className="text-blue-600 hover:underline text-sm"
+                className="text-pink-600 hover:text-pink-700 font-bold text-sm bg-pink-50 px-4 py-2 rounded-full transition-colors"
               >
-                View All
+                View All &rarr;
               </Link>
             </div>
             {recentWishlist.length > 0 ? (
@@ -182,26 +190,30 @@ export default function BuyerDashboard() {
                 {recentWishlist.map((item) => (
                   <div
                     key={item._id}
-                    className="flex items-center p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center p-4 bg-pink-50/30 rounded-2xl border border-pink-100/50 hover:bg-pink-50 transition-colors"
                   >
                     <img
-                      src={item.image || "https://placeholder.co/60x60"}
+                      src={item.image || "https://placehold.jp/60x60"}
                       alt={item.name}
-                      className="w-12 h-12 object-cover rounded mr-4"
+                      className="w-16 h-16 object-cover rounded-xl mr-5 shadow-md"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{item.name}</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-bold text-gray-900 truncate text-lg">{item.name}</div>
+                      <div className="text-pink-600 font-black">
                         ₹ {item.price?.toFixed(2)}
                       </div>
                     </div>
+                    <button className="p-3 bg-white text-pink-500 rounded-full shadow-sm hover:bg-pink-500 hover:text-white transition-all">
+                      🛒
+                    </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-center py-4">
-                Your wishlist is empty
-              </p>
+              <div className="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                 <span className="text-4xl block mb-2">💔</span>
+                 <p className="text-gray-500 font-medium">Your wishlist is lonely.</p>
+              </div>
             )}
           </div>
         </div>
@@ -212,25 +224,23 @@ export default function BuyerDashboard() {
 
 function StatCard({ value, label, link, color, icon }) {
   const colorStyles = {
-    blue: "bg-blue-50 border-blue-200 text-blue-700",
-    green: "bg-green-50 border-green-200 text-green-700",
-    red: "bg-red-50 border-red-200 text-red-700",
-    purple: "bg-purple-50 border-purple-200 text-purple-700",
-    yellow: "bg-yellow-50 border-yellow-200 text-yellow-700",
-    indigo: "bg-indigo-50 border-indigo-200 text-indigo-700",
+    emerald: "bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100",
+    pink: "bg-pink-50 border-pink-100 text-pink-700 hover:bg-pink-100",
+    teal: "bg-teal-50 border-teal-100 text-teal-700 hover:bg-teal-100",
+    amber: "bg-amber-50 border-amber-100 text-amber-700 hover:bg-amber-100",
   };
 
   const CardContent = (
-    <div className="flex items-center">
-      <div className="text-2xl mr-4">{icon}</div>
+    <div className="flex items-center gap-5">
+      <div className="text-4xl filter drop-shadow-md">{icon}</div>
       <div>
-        <div className="text-3xl font-bold">{value}</div>
-        <div className="text-sm font-medium">{label}</div>
+        <div className="text-3xl font-black tracking-tighter">{value}</div>
+        <div className="text-xs font-black uppercase tracking-widest opacity-70">{label}</div>
       </div>
     </div>
   );
 
-  const className = `block rounded-xl border p-6 hover:shadow-md transition ${colorStyles[color] || colorStyles.blue}`;
+  const className = `block rounded-3xl border-2 p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-95 ${colorStyles[color] || colorStyles.emerald}`;
 
   if (link) {
     return (
@@ -245,22 +255,20 @@ function StatCard({ value, label, link, color, icon }) {
 
 function ActionCard({ title, icon, description, link, color }) {
   const colorStyles = {
-    blue: "bg-blue-600 hover:bg-blue-700",
-    green: "bg-green-600 hover:bg-green-700",
-    red: "bg-red-600 hover:bg-red-700",
-    purple: "bg-purple-600 hover:bg-purple-700",
-    yellow: "bg-yellow-500 hover:bg-yellow-600",
-    indigo: "bg-indigo-600 hover:bg-indigo-700",
+    emerald: "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200",
+    pink: "bg-pink-600 hover:bg-pink-700 shadow-pink-200",
+    teal: "bg-teal-600 hover:bg-teal-700 shadow-teal-200",
+    amber: "bg-amber-500 hover:bg-amber-600 shadow-amber-200",
   };
 
   return (
     <Link
       to={link}
-      className={`block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition text-center ${colorStyles[color] || colorStyles.blue} text-white`}
+      className={`block rounded-3xl p-6 hover:shadow-2xl transition-all duration-300 text-center text-white hover:-translate-y-2 active:scale-95 shadow-lg ${colorStyles[color] || colorStyles.emerald}`}
     >
-      <div className="text-3xl mb-2">{icon}</div>
-      <h3 className="font-semibold mb-1">{title}</h3>
-      <p className="text-sm opacity-90">{description}</p>
+      <div className="text-4xl mb-3 filter drop-shadow-md">{icon}</div>
+      <h3 className="font-black text-lg leading-tight mb-1">{title}</h3>
+      <p className="text-[10px] uppercase font-black tracking-widest opacity-80">{description}</p>
     </Link>
   );
 }

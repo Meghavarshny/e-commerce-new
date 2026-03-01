@@ -160,7 +160,7 @@ export default function OrdersPage() {
                               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div className="flex items-center">
                                   <img 
-                                    src={item.product.image || "https://placeholder.co/60x60"} 
+                                    src={item.product.image || "https://placehold.jp/60x60"} 
                                     alt={item.product.name} 
                                     className="w-12 h-12 object-cover rounded mr-4"
                                   />

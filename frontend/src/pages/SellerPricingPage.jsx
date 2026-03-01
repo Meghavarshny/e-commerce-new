@@ -42,85 +42,94 @@ export default function SellerPricingPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-transparent">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4 border-b border-slate-200 pb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Competitive Pricing
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+              Market Intelligence
             </h1>
-            <p className="text-gray-600 mt-1">
-              Real-time market analysis for your inventory
+            <p className="text-slate-500 font-medium mt-1">
+              Competitive analysis for your product inventory
             </p>
           </div>
           <Link
             to="/dashboard"
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+            className="px-6 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-50 transition shadow-sm"
           >
-            &larr; Back to Dashboard
+            &larr; Dashboard
           </Link>
         </div>
 
         {/* Analytics Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Market Analysis
+        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
+          <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h2 className="text-xl font-black text-slate-900">
+              Live Price Analysis
             </h2>
-            <span className="text-xs text-gray-500 italic">
-              Data updated: Just now
-            </span>
+            <div className="flex items-center gap-2">
+               <span className="relative flex h-3 w-3">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                 <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+               </span>
+               <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">
+                 Market Data Active
+               </span>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 text-gray-600 uppercase text-xs font-semibold">
+              <thead className="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-100">
                 <tr>
-                  <th className="px-6 py-4">Product</th>
-                  <th className="px-6 py-4 text-center">Your Price</th>
-                  <th className="px-6 py-4 text-center">Market Avg</th>
-                  <th className="px-6 py-4 text-center">Lowest Price</th>
-                  <th className="px-6 py-4 text-center">Recommendation</th>
-                  <th className="px-6 py-4 text-center">Action</th>
+                  <th className="px-8 py-5">Product Details</th>
+                  <th className="px-8 py-5 text-center">Your Price</th>
+                  <th className="px-8 py-5 text-center">Market Avg</th>
+                  <th className="px-8 py-5 text-center">Lowest Price</th>
+                  <th className="px-8 py-5 text-center">Recommendation</th>
+                  <th className="px-8 py-5 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {pricingData.length > 0 ? (
                   pricingData.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50 transition">
-                      <td className="px-6 py-4">
+                    <tr key={item.id} className="hover:bg-indigo-50/30 transition-colors group">
+                      <td className="px-8 py-6">
                         <div className="flex items-center">
                           <img
                             src={item.image || "https://placehold.co/40x40"}
                             alt=""
-                            className="w-10 h-10 rounded object-cover mr-3 bg-gray-100"
+                            className="w-12 h-12 rounded-xl object-cover mr-4 bg-slate-100 shadow-sm group-hover:scale-110 transition-transform"
                           />
-                          <span className="font-medium text-gray-800">
+                          <span className="font-black text-slate-800 text-lg">
                             {item.name}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center font-medium">
-                        ₹ {item.myPrice}
+                      <td className="px-8 py-6 text-center font-black text-slate-900 text-lg">
+                        ₹{item.myPrice}
                       </td>
-                      <td className="px-6 py-4 text-center text-gray-600">
-                        ₹ {item.marketAvg}
+                      <td className="px-8 py-6 text-center text-slate-500 font-bold">
+                        ₹{item.marketAvg}
                       </td>
-                      <td className="px-6 py-4 text-center text-gray-600">
-                        ₹ {item.lowest}
+                      <td className="px-8 py-6 text-center text-slate-500 font-bold">
+                        ₹{item.lowest}
                       </td>
-                      <td
-                        className={`px-6 py-4 text-center ${item.adviceColor}`}
-                      >
-                        {item.advice}
+                      <td className="px-8 py-6 text-center">
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                           item.advice === "Maintain" ? "bg-slate-100 text-slate-600" :
+                           item.advice === "Lower Price" ? "bg-red-500 text-white" : "bg-emerald-500 text-white"
+                        }`}>
+                           {item.advice}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-8 py-6 text-center">
                         <Link
                           to="/seller/products"
-                          className="text-blue-600 hover:underline text-sm font-medium"
+                          className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-black text-xs hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
                         >
-                          Update Price
+                          EDIT
                         </Link>
                       </td>
                     </tr>
@@ -129,8 +138,9 @@ export default function SellerPricingPage() {
                   <tr>
                     <td
                       colSpan="6"
-                      className="px-6 py-12 text-center text-gray-500"
+                      className="px-8 py-20 text-center text-slate-400 font-bold text-lg"
                     >
+                      <span className="text-4xl block mb-4">📊</span>
                       No products found. Add products to see analysis.
                     </td>
                   </tr>
@@ -141,30 +151,27 @@ export default function SellerPricingPage() {
         </div>
 
         {/* Tips Section */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-            <h3 className="font-semibold text-blue-800 mb-2">💡 Pricing Tip</h3>
-            <p className="text-sm text-blue-700">
-              Products priced within 5% of the market average have a 40% higher
-              conversion rate.
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-slate-900 p-8 rounded-3xl shadow-xl shadow-slate-200 text-white relative overflow-hidden group">
+            <h3 className="font-black text-indigo-400 mb-3 uppercase text-xs tracking-widest relative z-10">💡 Strategy Tip</h3>
+            <p className="text-sm text-slate-300 leading-relaxed relative z-10">
+              Products priced within 5% of the market average have a <span className="text-white font-bold">40% higher</span> conversion rate.
             </p>
+            <div className="absolute -right-4 -bottom-4 text-6xl opacity-10 group-hover:scale-125 transition-transform">💰</div>
           </div>
-          <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-            <h3 className="font-semibold text-green-800 mb-2">
-              📈 Trend Alert
-            </h3>
-            <p className="text-sm text-green-700">
-              Electronics category prices are trending upwards by 12% this week.
+          <div className="bg-indigo-600 p-8 rounded-3xl shadow-xl shadow-indigo-200 text-white relative overflow-hidden group">
+            <h3 className="font-black text-indigo-200 mb-3 uppercase text-xs tracking-widest relative z-10">📈 Market Alert</h3>
+            <p className="text-sm text-indigo-50 leading-relaxed relative z-10">
+              Your category prices are trending upwards by <span className="text-white font-bold">12%</span> this week. Consider adjusting!
             </p>
+            <div className="absolute -right-4 -bottom-4 text-6xl opacity-10 group-hover:scale-125 transition-transform">🚀</div>
           </div>
-          <div className="bg-purple-50 p-6 rounded-xl border border-purple-100">
-            <h3 className="font-semibold text-purple-800 mb-2">
-              ⭐ Premium Strategy
-            </h3>
-            <p className="text-sm text-purple-700">
-              Highlight unique features to justify maintaining a premium price
-              point.
+          <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200 border border-slate-100 relative overflow-hidden group">
+            <h3 className="font-black text-indigo-600 mb-3 uppercase text-xs tracking-widest relative z-10">⭐ Premium Factor</h3>
+            <p className="text-sm text-slate-600 leading-relaxed relative z-10">
+              Highlight unique features to justify maintaining a <span className="text-slate-900 font-bold">premium price</span> point.
             </p>
+            <div className="absolute -right-4 -bottom-4 text-6xl opacity-10 group-hover:scale-125 transition-transform">✨</div>
           </div>
         </div>
       </div>

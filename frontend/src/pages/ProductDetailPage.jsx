@@ -107,11 +107,11 @@ export default function ProductDetailPage() {
         <div>
           <div className="bg-gray-100 rounded-xl p-4 mb-4">
             <img
-              src={product.image || "https://placeholder.co/600x600"}
+              src={product.image || "https://placehold.jp/600x600"}
               alt={product.name}
               className="w-full h-96 object-contain rounded-lg"
               onError={(e) => {
-                e.target.src = "https://placeholder.co/600x600";
+                e.target.src = "https://placehold.jp/600x600";
               }}
             />
           </div>

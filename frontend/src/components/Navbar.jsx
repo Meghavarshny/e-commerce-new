@@ -22,14 +22,14 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 transition-all duration-300">
+    <nav className="bg-white/95 backdrop-blur-md border-b-2 border-emerald-500 sticky top-0 z-50 transition-all duration-300 shadow-sm shadow-emerald-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-700 p-2"
+              className="text-emerald-700 hover:bg-emerald-50 p-2 rounded-lg transition"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -48,51 +48,51 @@ export default function Navbar() {
             </button>
             <Link
               to="/"
-              className="text-xl font-bold tracking-tight text-blue-700 ml-2"
+              className="text-2xl font-black tracking-tighter text-emerald-700 ml-2"
             >
-              E-Commerce
+              ECO<span className="text-emerald-500">MM</span>
             </Link>
           </div>
 
           {/* Desktop Logo */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-6">
             <Link
               to="/"
-              className="text-xl font-bold tracking-tight text-blue-700"
+              className="text-2xl font-black tracking-tighter text-emerald-700"
             >
-              E-Commerce
+              ECO<span className="text-emerald-500">MM</span>
             </Link>
             <NavLink
               to="/products"
               className={({ isActive }) =>
-                `text-gray-700 mx-3 hover:text-blue-700 font-medium ${isActive ? "text-blue-700" : ""}`
+                `text-gray-700 hover:text-emerald-700 font-semibold transition-colors px-1 py-1 ${isActive ? "text-emerald-700 border-b-2 border-emerald-500" : ""}`
               }
               onClick={handleLinkClick}
             >
-              Products
+              Shop
             </NavLink>
           </div>
 
-          {/* Search Form - Hidden on mobile when menu is open */}
+          {/* Search Form */}
           <form
             onSubmit={handleSearch}
-            className={`${isMenuOpen ? "hidden md:flex" : "flex"} flex-1 max-w-xl mx-4 md:mx-6`}
+            className={`${isMenuOpen ? "hidden md:flex" : "flex"} flex-1 max-w-lg mx-8`}
           >
             <div className="relative w-full">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Search for items..."
+                className="w-full px-5 py-2.5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1 rounded hover:bg-blue-700"
+                className="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-emerald-600 text-white p-2 rounded-full hover:bg-emerald-700 transition shadow-md active:scale-95"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="h-4 w-4"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -107,83 +107,77 @@ export default function Navbar() {
           </form>
 
           {/* Desktop User Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Common Links */}
-            {user?.role !== "seller" && (
+          <div className="hidden md:flex items-center gap-6">
+            {(!user || user.role === "buyer") && (
               <>
                 <NavLink
                   to="/cart"
                   className={({ isActive }) =>
-                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
                   }
                 >
-                  Cart
+                  <span className="text-xl">🛒</span>
+                  <span>Cart</span>
                 </NavLink>
-                {/* Wishlist only for logged in buyers (or users with no role yet, assuming buyer) */}
-                <NavLink
-                  to="/wishlist"
-                  className={({ isActive }) =>
-                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
-                  }
-                >
-                  Wishlist
-                </NavLink>
+                
                 <NavLink
                   to="/orders"
                   className={({ isActive }) =>
-                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
                   }
                 >
-                  Orders
+                  <span className="text-xl">📦</span>
+                  <span>Orders</span>
                 </NavLink>
-              </>
-            )}
 
-            {/* Seller Specific Links */}
-            {user?.role === "seller" && (
-              <>
                 <NavLink
-                  to="/seller/pricing"
+                  to="/dashboard"
                   className={({ isActive }) =>
-                    `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
                   }
                 >
-                  Pricing
+                  <span className="text-xl">🏠</span>
+                  <span>Account</span>
                 </NavLink>
               </>
             )}
 
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) =>
-                `hover:text-blue-700 text-gray-700 ${isActive ? "text-blue-700" : ""}`
-              }
-            >
-              Dashboard
-            </NavLink>
+            {user?.role === "seller" && (
+              <NavLink
+                to="/dashboard"
+                className="flex items-center gap-1.5 font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                <span className="text-xl">📊</span>
+                <span>Console</span>
+              </NavLink>
+            )}
 
             {user ? (
-              <>
-                <span className="px-2 py-1 rounded bg-gray-100 text-sm">
+              <div className="flex items-center gap-4 pl-4 border-l border-gray-200">
+                <span className={`text-sm font-bold px-3 py-1 rounded-full border ${user.role === 'seller' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'}`}>
                   {user.name}
                 </span>
                 <button
                   onClick={logout}
-                  className="ml-2 px-3 py-1 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded"
+                  className="text-gray-400 hover:text-red-600 transition"
+                  title="Logout"
                 >
-                  Logout
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
                 </button>
-              </>
+              </div>
             ) : (
               <NavLink
                 to="/login"
-                className="px-4 py-1 border border-blue-700 hover:bg-blue-700 hover:text-white rounded font-medium text-blue-700 transition"
+                className="px-6 py-2 bg-emerald-600 text-white rounded-full font-bold hover:bg-emerald-700 transition shadow-md hover:shadow-lg active:scale-95"
               >
                 Login
               </NavLink>
             )}
           </div>
         </div>
+
 
         {/* Mobile Menu */}
         {isMenuOpen && (
