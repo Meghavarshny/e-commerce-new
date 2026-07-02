@@ -152,6 +152,15 @@ export default function Navbar() {
                   <span>Orders</span>
                 </NavLink>
                 <NavLink
+                  to="/wishlist"
+                  className={({ isActive }) =>
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
+                  }
+                >
+                  <span className="text-xl">❤️</span>
+                  <span>Wishlist</span>
+                </NavLink>
+                <NavLink
                   to="/dashboard"
                   className={({ isActive }) =>
                     `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
