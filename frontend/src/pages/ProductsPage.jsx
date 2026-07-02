@@ -37,7 +37,7 @@ export default function ProductsPage() {
   // Handle search and category filter
   useEffect(() => {
     refetch();
-  }, [refetch, searchQuery, categoryQuery, minPriceQuery, maxPriceQuery]);
+  }, [searchQuery, categoryQuery, minPriceQuery, maxPriceQuery]);
 
   const handleFilter = (e) => {
     e.preventDefault();

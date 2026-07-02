@@ -76,7 +76,7 @@ export default function SellerDashboard() {
             icon="💰"
           />
           <StatCard
-            value={sellerProducts.filter((p) => p.stock > 0).length}
+            value={sellerProducts.filter((p) => (p.stock || 0) > 0).length}
             label="Active"
             color="amber"
             icon="🟢"

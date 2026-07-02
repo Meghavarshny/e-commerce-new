@@ -1,10 +1,11 @@
 import useWishlist from "../hooks/useWishlist";
-import ProductCard from "../components/ProductCard";
+import useApi from "../hooks/useApi";
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
 
 export default function WishlistPage() {
-  const { wishlist, loading, error, removeFromWishlist } = useWishlist();
+  const { wishlist, loading, error, removeFromWishlist, refetch } = useWishlist();
+  const { api } = useApi();
   const navigate = useNavigate();
 
   if (loading) return <Loader />;
@@ -71,10 +72,14 @@ export default function WishlistPage() {
                 Showing {wishlist?.length || 0} item{wishlist?.length !== 1 ? 's' : ''} in your wishlist
               </div>
               <button
-                onClick={() => {
-                  // Add a "Clear wishlist" action if needed
+                onClick={async () => {
                   if (window.confirm('Are you sure you want to clear your entire wishlist?')) {
-                    // Implementation would go here
+                    try {
+                      await api.delete('/wishlist');
+                      refetch();
+                    } catch (err) {
+                      console.error('Failed to clear wishlist:', err);
+                    }
                   }
                 }}
                 className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
@@ -159,12 +164,10 @@ export default function WishlistPage() {
                     </div>
                     
                     <button
-                      onClick={() => {
-                        // Add to cart functionality
-                      }}
+                      onClick={() => navigate(`/products/${product._id}`)}
                       className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
                     >
-                      Add to Cart
+                      View Product
                     </button>
                   </div>
                 </div>

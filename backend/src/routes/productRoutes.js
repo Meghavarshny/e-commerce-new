@@ -9,11 +9,15 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController");
+const { addReview } = require("../controllers/reviewController");
 const { protect, restrictTo } = require("../middlewares/authMiddleware");
 
 // Buyer/Seller: Browse and view products
 router.get("/", getProducts);
 router.get("/:id", getProductById);
+
+// Reviews (nested under products)
+router.post("/:id/reviews", protect, restrictTo("buyer"), addReview);
 
 // Seller: Create/manage products
 router.post(

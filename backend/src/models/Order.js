@@ -20,7 +20,8 @@ const orderSchema = new mongoose.Schema({
   },
   paymentInfo: {
     method: { type: String, default: 'duplicate' },
-    status: { type: String, default: 'Paid' }
+    status: { type: String, default: 'Paid' },
+    transactionId: { type: String }
   },
   status: { type: String, default: 'Paid' }
 }, { timestamps: true });

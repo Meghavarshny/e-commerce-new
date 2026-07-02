@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 const api = axios.create({
@@ -17,41 +17,23 @@ export default function useApi(url) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!url) return;
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get(url);
-        setData(response.data);
-      } catch (err) {
-        setError(err.response?.data?.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.get(url);
+      setData(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }, [url]);
 
-  const refetch = () => {
-    if (url) {
-      setError(null);
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          const response = await api.get(url);
-          setData(response.data);
-        } catch (err) {
-          setError(err.response?.data?.message || "Something went wrong");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchData();
-    }
-  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  return { data, loading, error, refetch, api };
+  return { data, loading, error, refetch: fetchData, api };
 }

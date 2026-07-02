@@ -23,9 +23,9 @@ import PaymentConfirmationPage from "./pages/PaymentConfirmationPage";
 import SellerProductsPage from "./pages/SellerProductsPage";
 import SellerOrdersPage from "./pages/SellerOrdersPage";
 import SellerPricingPage from "./pages/SellerPricingPage";
+import SellerDashboard from "./pages/SellerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
-import { useEffect } from "react";
 import SellerSidebar from "./components/SellerSidebar";
 
 const queryClient = new QueryClient();
@@ -34,34 +34,10 @@ function App() {
   const { user } = useAuth();
   const isSeller = user?.role === "seller";
 
-  useEffect(() => {
-    // Dynamic background and themes based on user role
-    const role = user?.role;
-    
-    // Clear all existing theme-related body classes
-    const classesToRemove = [
-      "bg-white", "bg-blue-50/30", "bg-indigo-50/30", "bg-gray-50", 
-      "bg-emerald-50/20", "bg-slate-50", "theme-buyer", "theme-seller"
-    ];
-    document.body.classList.remove(...classesToRemove);
-    
-    if (role === "buyer") {
-      document.body.classList.add("bg-emerald-50/20", "theme-buyer"); 
-    } else if (role === "seller") {
-      document.body.classList.add("bg-slate-50", "theme-seller"); 
-    } else {
-      document.body.classList.add("bg-white"); 
-    }
-    
-    return () => {
-      document.body.classList.remove(...classesToRemove);
-    };
-  }, [user]);
-
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <div className={`min-h-screen flex ${isSeller ? "flex-row" : "flex-col"}`}>
+        <div className={`min-h-screen flex bg-gray-50 ${isSeller ? "flex-row" : "flex-col"}`}>
           {isSeller ? (
             <>
               <SellerSidebar />

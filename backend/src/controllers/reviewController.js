@@ -5,8 +5,12 @@ const Order = require('../models/Order');
 exports.addReview = async (req, res) => {
   try {
     const { rating, comment } = req.body;
-    const { productId } = req.params;
+    const productId = req.params.productId || req.params.id;
     const userId = req.user.userId;
+
+    if (!rating || !comment) {
+      return res.status(400).json({ message: 'Rating and comment are required' });
+    }
 
     // 1. Check if product exists
     const product = await Product.findById(productId);

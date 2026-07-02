@@ -10,6 +10,14 @@ exports.addToWishlist = async (req, res) => {
   res.status(200).json({ message: 'Added to wishlist' });
 };
 
+// Clear Wishlist
+exports.clearWishlist = async (req, res) => {
+  const user = await User.findById(req.user.userId);
+  user.wishlist = [];
+  await user.save();
+  res.status(200).json({ message: 'Wishlist cleared' });
+};
+
 // Remove from Wishlist
 exports.removeFromWishlist = async (req, res) => {
   const user = await User.findById(req.user.userId);

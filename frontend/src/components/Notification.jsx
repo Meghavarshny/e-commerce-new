@@ -1,6 +1,6 @@
 export default function Notification({ message, type, onClose }) {
   return (
-    <div className={`fixed top-20 right-5 z-[60] px-6 py-4 rounded-lg text-white shadow-lg transform transition-all duration-300 ease-in-out
+    <div className={`fixed top-4 right-5 z-[9999] px-6 py-4 rounded-lg text-white shadow-lg transform transition-all duration-300 ease-in-out
       ${type === "error" ? "bg-red-500" : type === "warning" ? "bg-yellow-500" : "bg-green-500"}
       animate-fadeInUp`}>
       <div className="flex items-start">

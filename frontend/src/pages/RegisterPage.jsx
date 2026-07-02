@@ -108,7 +108,7 @@ export default function RegisterPage() {
           </select>
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-black px-4 py-2 rounded font-semibold transition text-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition text-lg"
             disabled={loading}
           >
             {loading ? "Registering..." : "Register"}

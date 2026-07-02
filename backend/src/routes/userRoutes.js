@@ -7,6 +7,7 @@ const {
   login,
   getProfile,
   updateProfile,
+  changePassword,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -17,5 +18,8 @@ router.post("/login", validate(loginSchema), login);
 // Protected Profile Routes
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
+
+// Password Management
+router.put("/password", protect, changePassword);
 
 module.exports = router;

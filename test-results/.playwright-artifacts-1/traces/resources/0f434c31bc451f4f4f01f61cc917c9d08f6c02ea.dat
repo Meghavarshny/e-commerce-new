@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkv2=globalThis.webpackChunkv2||[]).push([[11041],{27015:(e,n,t)=>{t.r(n),t.d(n,{default:()=>c});var u=t(73493),a=(t(53857),t(98370),t(12630));function c(e,n){return new.target?(0,u.rc)({component:c,...e}):(a.VFu(n,!1),a.Swx({$set:a.oCc,$on:(e,t)=>a.mh$(n,e,t)}))}}}]);

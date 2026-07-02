@@ -62,8 +62,11 @@ export default function ProductCard({ product }) {
               View Details
             </Link>
             
-            {/* Show shopping actions ONLY for buyers or guests */}
-            {(!user || user.role === "buyer") && (
+            {user?.role === "seller" ? (
+              <div className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-widest text-center rounded-xl border border-indigo-100 flex items-center justify-center">
+                Inventory View
+              </div>
+            ) : (
               <>
                 <button
                   onClick={handleAddToWishlist}
@@ -100,12 +103,6 @@ export default function ProductCard({ product }) {
                   </svg>
                 </button>
               </>
-            )}
-
-            {user?.role === "seller" && (
-              <div className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-widest text-center rounded-xl border border-indigo-100 flex items-center justify-center">
-                Inventory View
-              </div>
             )}
           </div>
           {notification && (

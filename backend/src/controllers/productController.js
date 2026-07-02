@@ -26,13 +26,13 @@ exports.getProducts = async (req, res) => {
     if (maxPrice) query.price.$lte = Number(maxPrice);
   }
 
-  const products = await Product.find(query);
+  const products = await Product.find(query).populate("reviews.user", "name");
   res.status(200).json(products);
 };
 
 // Get Product By ID
 exports.getProductById = async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id).populate("reviews.user", "name");
   if (!product) return res.status(404).json({ message: "Product not found" });
   res.status(200).json(product);
 };

@@ -108,7 +108,7 @@ export default function Navbar() {
 
           {/* Desktop User Actions */}
           <div className="hidden md:flex items-center gap-6">
-            {(!user || user.role === "buyer") && (
+            {!user && (
               <>
                 <NavLink
                   to="/cart"
@@ -119,7 +119,29 @@ export default function Navbar() {
                   <span className="text-xl">🛒</span>
                   <span>Cart</span>
                 </NavLink>
-                
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
+                  }
+                >
+                  <span className="text-xl">🏠</span>
+                  <span>Account</span>
+                </NavLink>
+              </>
+            )}
+
+            {user?.role === "buyer" && (
+              <>
+                <NavLink
+                  to="/cart"
+                  className={({ isActive }) =>
+                    `flex items-center gap-1.5 font-medium transition-colors ${isActive ? "text-emerald-700" : "text-gray-600 hover:text-emerald-700"}`
+                  }
+                >
+                  <span className="text-xl">🛒</span>
+                  <span>Cart</span>
+                </NavLink>
                 <NavLink
                   to="/orders"
                   className={({ isActive }) =>
@@ -129,7 +151,6 @@ export default function Navbar() {
                   <span className="text-xl">📦</span>
                   <span>Orders</span>
                 </NavLink>
-
                 <NavLink
                   to="/dashboard"
                   className={({ isActive }) =>
