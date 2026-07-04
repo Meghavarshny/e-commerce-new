@@ -16,7 +16,6 @@ export default function SellerProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Form state
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -25,6 +24,7 @@ export default function SellerProductsPage() {
     category: "",
   });
   const [editingId, setEditingId] = useState(null);
+  const [editModal, setEditModal] = useState(null);
 
   // Fetch own products
   const fetchProducts = useCallback(async () => {
@@ -52,17 +52,31 @@ export default function SellerProductsPage() {
       fetchProducts();
       const editProduct = location.state?.editProduct;
       if (editProduct) {
-        setEditingId(editProduct.id);
-        setForm({
-          name: editProduct.name,
-          description: "",
-          price: editProduct.myPrice?.toString() || "",
-          image: editProduct.image || "",
-          category: "",
-        });
+        // Find full product from fetched data to populate modal
+        const match = products.find(p => p._id === editProduct.id);
+        if (match) {
+          setEditModal({
+            _id: match._id,
+            name: match.name,
+            description: match.description || "",
+            price: match.price?.toString() || "",
+            image: match.image || "",
+            category: match.category || "",
+          });
+        } else {
+          setEditModal({
+            _id: editProduct.id,
+            name: editProduct.name,
+            description: editProduct.description || "",
+            price: editProduct.myPrice?.toString() || "",
+            image: editProduct.image || "",
+            category: editProduct.category || "",
+          });
+        }
+        window.history.replaceState({}, document.title);
       }
     }
-  }, [user, fetchProducts, location.state]);
+  }, [user, fetchProducts]);
 
   // Add new product
   const handleAdd = async (e) => {
@@ -88,26 +102,35 @@ export default function SellerProductsPage() {
     setLoading(false);
   };
 
-  // Edit product: load details to form
+  // Edit product: open modal
   const handleEditInit = (prod) => {
-    setEditingId(prod._id);
-    setForm(prod);
+    setEditModal({
+      _id: prod._id,
+      name: prod.name,
+      description: prod.description || "",
+      price: prod.price?.toString() || "",
+      image: prod.image || "",
+      category: prod.category || "",
+    });
   };
 
-  // Update product
-  const handleUpdate = async (e) => {
-    e.preventDefault();
+  const handleEditModalChange = (field, value) => {
+    setEditModal((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Update product from modal
+  const handleUpdate = async () => {
+    if (!editModal) return;
     setLoading(true);
     try {
-      await api.put(`/products/${editingId}`, form);
-      setEditingId(null);
-      setForm({
-        name: "",
-        description: "",
-        price: "",
-        image: "",
-        category: "",
+      await api.put(`/products/${editModal._id}`, {
+        name: editModal.name,
+        description: editModal.description,
+        price: editModal.price,
+        image: editModal.image,
+        category: editModal.category,
       });
+      setEditModal(null);
       showNotification("Product updated!");
       fetchProducts();
     } catch (err) {
@@ -115,6 +138,8 @@ export default function SellerProductsPage() {
     }
     setLoading(false);
   };
+
+  const closeEditModal = () => setEditModal(null);
 
   // Delete product
   const handleDelete = async (id) => {
@@ -147,14 +172,14 @@ export default function SellerProductsPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Form */}
+        {/* Left Column: Add Product Form */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 sticky top-24">
             <h3 className="text-lg font-semibold mb-4">
-              {editingId ? "Edit Product" : "Add New Product"}
+              Add New Product
             </h3>
             <form
-              onSubmit={editingId ? handleUpdate : handleAdd}
+              onSubmit={handleAdd}
               className="flex flex-col gap-4"
             >
               <div>
@@ -234,37 +259,13 @@ export default function SellerProductsPage() {
                 />
               </div>
 
-              <div className="flex gap-2 pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`flex-1 py-2 px-4 rounded-lg text-white font-medium transition ${
-                    loading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg translate-y-0 active:translate-y-0.5"
-                  }`}
-                >
-                  {loading ? "Saving..." : editingId ? "Update" : "Add Product"}
-                </button>
-                {editingId && (
-                  <button
-                    type="button"
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-                    onClick={() => {
-                      setEditingId(null);
-                      setForm({
-                        name: "",
-                        description: "",
-                        price: "",
-                        image: "",
-                        category: "",
-                      });
-                    }}
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2 px-4 rounded-lg text-white font-medium transition bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg disabled:bg-blue-400 disabled:cursor-not-allowed"
+              >
+                {loading ? "Saving..." : "Add Product"}
+              </button>
             </form>
           </div>
         </div>
@@ -346,6 +347,51 @@ export default function SellerProductsPage() {
           )}
         </div>
       </div>
+      {/* Edit Product Modal */}
+      {editModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={closeEditModal}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900">Edit Product</h3>
+              <button onClick={closeEditModal} className="text-gray-400 hover:text-gray-600 transition p-1">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                <input value={editModal.name} onChange={(e) => handleEditModalChange("name", e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea value={editModal.description} onChange={(e) => handleEditModalChange("description", e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" rows="3" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                  <input type="number" min="0" value={editModal.price} onChange={(e) => handleEditModalChange("price", e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <input value={editModal.category} onChange={(e) => handleEditModalChange("category", e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input value={editModal.image} onChange={(e) => handleEditModalChange("image", e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+              </div>
+            </div>
+            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+              <button onClick={closeEditModal} className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-medium transition">Cancel</button>
+              <button onClick={handleUpdate} disabled={loading} className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:bg-blue-400 shadow-md">
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -32,6 +32,8 @@ export default function SellerPricingPage() {
     return {
       id: prod._id,
       name: prod.name,
+      description: prod.description || "",
+      category: prod.category || "",
       image: prod.image,
       myPrice: prod.price,
       marketAvg,

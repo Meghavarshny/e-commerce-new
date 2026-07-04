@@ -50,6 +50,7 @@ function App() {
                       <Route path="/seller/products" element={<SellerProductsPage />} />
                       <Route path="/seller/orders" element={<SellerOrdersPage />} />
                       <Route path="/seller/pricing" element={<SellerPricingPage />} />
+                      <Route path="/products/:id" element={<ProductDetailPage />} />
                       
                       {/* Redirect ALL buyer-specific paths to seller dashboard if logged in as seller */}
                       <Route path="/cart" element={<Navigate to="/dashboard" />} />

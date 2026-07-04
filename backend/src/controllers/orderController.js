@@ -20,13 +20,13 @@ exports.getOrders = async (req, res) => {
   let filter = {};
   if (req.user.role === 'buyer') filter.buyer = req.user.userId;
   if (req.user.role === 'seller') filter['items.seller'] = req.user.userId;
-  const orders = await Order.find(filter).sort({ createdAt: -1 });
+  const orders = await Order.find(filter).sort({ createdAt: -1 }).populate("items.product", "name image price");
   res.status(200).json(orders);
 };
 
 // Get Order By ID
 exports.getOrderById = async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate("items.product", "name image price");
   if (!order) return res.status(404).json({ message: 'Order not found' });
   const isBuyer = order.buyer.toString() === req.user.userId;
   const isSeller = order.items.some(item => item.seller.toString() === req.user.userId);
@@ -55,7 +55,8 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
-    res.status(200).json(order);
+    const populatedOrder = await Order.findById(order._id).populate("items.product", "name image price");
+    res.status(200).json(populatedOrder);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update order status', error: error.message });
   }
