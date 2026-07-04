@@ -63,9 +63,12 @@ export default function ProductCard({ product }) {
             </Link>
             
             {user?.role === "seller" ? (
-              <div className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-widest text-center rounded-xl border border-indigo-100 flex items-center justify-center">
+              <Link
+                to="/seller/products"
+                className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-widest text-center rounded-xl border border-indigo-100 hover:bg-indigo-100 hover:shadow-md transition-all duration-200 flex items-center justify-center"
+              >
                 Inventory View
-              </div>
+              </Link>
             ) : (
               <>
                 <button

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useApi from "../hooks/useApi";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
@@ -9,6 +9,7 @@ import useNotification from "../hooks/useNotification";
 export default function SellerProductsPage() {
   const { user } = useAuth();
   const { api } = useApi();
+  const location = useLocation();
   const { notification, showNotification, hideNotification } =
     useNotification();
 
@@ -47,8 +48,21 @@ export default function SellerProductsPage() {
   }, [api, user, showNotification]);
 
   useEffect(() => {
-    if (user?.role === "seller") fetchProducts();
-  }, [user, fetchProducts]);
+    if (user?.role === "seller") {
+      fetchProducts();
+      const editProduct = location.state?.editProduct;
+      if (editProduct) {
+        setEditingId(editProduct.id);
+        setForm({
+          name: editProduct.name,
+          description: "",
+          price: editProduct.myPrice?.toString() || "",
+          image: editProduct.image || "",
+          category: "",
+        });
+      }
+    }
+  }, [user, fetchProducts, location.state]);
 
   // Add new product
   const handleAdd = async (e) => {

@@ -127,6 +127,7 @@ export default function SellerPricingPage() {
                       <td className="px-8 py-6 text-center">
                         <Link
                           to="/seller/products"
+                          state={{ editProduct: item }}
                           className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-black text-xs hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
                         >
                           EDIT

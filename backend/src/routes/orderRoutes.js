@@ -6,8 +6,9 @@ const {
   placeOrder,
   getOrders,
   getOrderById,
+  updateOrderStatus,
 } = require("../controllers/orderController");
-const { protect } = require("../middlewares/authMiddleware");
+const { protect, restrictTo } = require("../middlewares/authMiddleware");
 
 // Place order (buyer)
 router.post("/", protect, validate(orderSchema), placeOrder);
@@ -15,5 +16,7 @@ router.post("/", protect, validate(orderSchema), placeOrder);
 router.get("/", protect, getOrders);
 // Get specific order
 router.get("/:id", protect, getOrderById);
+// Update order status (seller)
+router.put("/:id/status", protect, restrictTo("seller"), updateOrderStatus);
 
 module.exports = router;

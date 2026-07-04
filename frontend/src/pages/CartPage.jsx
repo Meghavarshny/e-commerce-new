@@ -21,7 +21,9 @@ export default function CartPage() {
 
   const handleQuantityChange = async (productId, newQuantity) => {
     if (newQuantity <= 0) {
-      handleRemoveFromCart(productId);
+      if (window.confirm("Are you sure you want to remove this item from your cart?")) {
+        handleRemoveFromCart(productId);
+      }
       return;
     }
     

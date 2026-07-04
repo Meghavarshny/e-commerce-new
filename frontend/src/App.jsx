@@ -145,11 +145,7 @@ function App() {
 
                     <Route
                       path="*"
-                      element={
-                        <div className="container mx-auto py-12 text-center text-red-600 font-bold">
-                          404 - Not Found
-                        </div>
-                      }
+                      element={<Navigate to="/login" replace />}
                     />
                   </Routes>
                 </AnimatePresence>
