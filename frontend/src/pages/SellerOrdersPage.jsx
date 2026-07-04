@@ -84,19 +84,24 @@ export default function SellerOrdersPage() {
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Your Sold Items</div>
                   <div className="space-y-4">
                     {order.items
-                      .filter((it) => it.seller === user.id || it.seller === user._id)
-                      .map((item) => (
-                        <div key={item.product} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 group-hover:bg-slate-100/50 transition-colors">
-                          <div>
-                             <div className="font-bold text-slate-800">ID: {item.product}</div>
-                             <div className="text-xs text-slate-500 mt-1">Quantity: <span className="font-bold text-slate-700">{item.quantity}</span></div>
-                          </div>
-                          <div className="text-right">
-                             <div className="font-black text-slate-900">₹{item.price.toFixed(2)}</div>
-                             <div className="text-[10px] text-slate-400 uppercase font-bold">Unit Price</div>
-                          </div>
-                        </div>
-                      ))}
+                                          .filter((it) => it.seller === user.id || it.seller === user._id)
+                                          .map((item) => {
+                                            const product = item.product;
+                                            const productName = product?.name || product?._id || "Unknown Product";
+                                            const productId = product?._id || product || "Unknown ID";
+                                            return (
+                                              <div key={productId} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 group-hover:bg-slate-100/50 transition-colors">
+                                                <div>
+                                                   <div className="font-bold text-slate-800">{productName}</div>
+                                                   <div className="text-xs text-slate-500 mt-1">Quantity: <span className="font-bold text-slate-700">{item.quantity}</span></div>
+                                                </div>
+                                                <div className="text-right">
+                                                   <div className="font-black text-slate-900">₹{item.price.toFixed(2)}</div>
+                                                   <div className="text-[10px] text-slate-400 uppercase font-bold">Unit Price</div>
+                                                </div>
+                                              </div>
+                                            );
+                                          })}
                   </div>
 
                   <div className="mt-8 flex justify-between items-end border-t border-slate-100 pt-6">

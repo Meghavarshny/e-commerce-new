@@ -11,6 +11,37 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Helper to validate and transform cart items
+const transformCartItem = (item) => {
+  // Handle case where item might be a product object instead of a cart item
+  if (item.product && typeof item.product === 'object') {
+    return {
+      _id: item.product._id || item.product,
+      name: item.product.name || "Unknown",
+      price: item.price,
+      image: item.product.image || "",
+      seller: item.product.seller || item.seller,
+      quantity: item.quantity,
+    };
+  }
+  // Handle case where item is already a cart item
+  if (item._id && item.name) {
+    return item;
+  }
+  // Handle case where item is just a product object
+  if (item.name && item.price !== undefined) {
+    return {
+      _id: item._id || item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image || "",
+      seller: item.seller,
+      quantity: item.quantity || 1,
+    };
+  }
+  return null;
+};
+
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
@@ -25,28 +56,35 @@ export function CartProvider({ children }) {
     if (initialized) return;
     if (user) {
       api.get("/cart").then((res) => {
-        const serverCart = (res.data || []).map((item) => ({
-          _id: item.product?._id || item.product,
-          name: item.product?.name || "Unknown",
-          price: item.price,
-          image: item.product?.image || "",
-          seller: item.product?.seller || item.seller,
-          quantity: item.quantity,
-        }));
+        const serverCart = (res.data || []).map((item) => transformCartItem(item)).filter(Boolean);
         setCart(serverCart);
         localStorage.setItem("cart", JSON.stringify(serverCart));
         setInitialized(true);
-      }).catch(() => {
+      }).catch((error) => {
+        // Handle 403 (Forbidden) and 401 (Unauthorized) - clear localStorage and fallback
+        if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+          localStorage.removeItem("cart");
+        }
         const saved = localStorage.getItem("cart");
         if (saved) {
-          try { setCart(JSON.parse(saved)); } catch {}
+          try { 
+            const parsed = JSON.parse(saved);
+            const validCart = parsed.map(transformCartItem).filter(Boolean);
+            setCart(validCart);
+            localStorage.setItem("cart", JSON.stringify(validCart));
+          } catch {}
         }
         setInitialized(true);
       });
     } else {
       const saved = localStorage.getItem("cart");
       if (saved) {
-        try { setCart(JSON.parse(saved)); } catch {}
+        try { 
+          const parsed = JSON.parse(saved);
+          const validCart = parsed.map(transformCartItem).filter(Boolean);
+          setCart(validCart);
+          localStorage.setItem("cart", JSON.stringify(validCart));
+        } catch {}
       }
       setInitialized(true);
     }
