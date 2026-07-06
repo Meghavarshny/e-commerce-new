@@ -27,7 +27,9 @@ export default function useOrders() {
       const response = await api.post("/orders", orderData);
       return response.data;
     } catch (err) {
-      throw new Error(err.response?.data?.message || "Failed to place order");
+      err.userMessage = err.response?.data?.message || "Failed to place order";
+      err.validationErrors = err.response?.data?.errors;
+      throw err;
     }
   };
 

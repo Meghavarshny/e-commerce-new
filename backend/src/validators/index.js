@@ -44,13 +44,14 @@ const orderSchema = z.object({
       .array(
         z.object({
           product: z.string().min(1, "Product ID is required"),
-          quantity: z.number().int().positive("Quantity must be positive"),
-          price: z.number().positive("Price must be positive"),
+          quantity: z.coerce.number().int().positive("Quantity must be positive"),
+          price: z.coerce.number().positive("Price must be positive"),
+          seller: z.string().optional(),
         }),
       )
       .min(1, "Order must contain at least one item"),
     shippingInfo: z.object({
-      address: z.string().min(5, "Address is too short"),
+      address: z.string().min(5, "Address must be at least 5 characters"),
       city: z.string().min(2, "City is required"),
       postalCode: z.string().min(3, "Postal code is required"),
       country: z.string().min(2, "Country is required"),
@@ -59,6 +60,7 @@ const orderSchema = z.object({
       .object({
         method: z.string(),
         status: z.string(),
+        transactionId: z.string().optional(),
       })
       .optional(),
   }),
