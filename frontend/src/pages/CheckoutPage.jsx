@@ -343,9 +343,9 @@ export default function CheckoutPage() {
               <div className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
-                    { id: "card", label: "Credit / Debit Card", badge: "CC", badgeColor: "bg-blue-600", desc: "Secure Razorpay popup" },
-                    { id: "upi", label: "UPI / QR", badge: "UPI", badgeColor: "bg-emerald-600", desc: "Pay via UPI app" },
-                    { id: "cod", label: "Cash on Delivery", badge: "COD", badgeColor: "bg-gray-600", desc: "Pay when delivered" },
+                    { id: "card", label: "Credit / Debit Card", color: "bg-blue-600", desc: "Secure Razorpay popup" },
+                    { id: "upi", label: "UPI / QR", color: "bg-emerald-600", desc: "Pay via UPI app" },
+                    { id: "cod", label: "Cash on Delivery", color: "bg-gray-700", desc: "Pay when delivered" },
                   ].map((method) => (
                     <button
                       key={method.id}
@@ -353,21 +353,21 @@ export default function CheckoutPage() {
                       onClick={() => setPaymentMethod(method.id)}
                       className={`relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${
                         paymentMethod === method.id
-                          ? "border-blue-500 bg-blue-50 shadow-md shadow-blue-100"
-                          : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                          ? `${method.color} border-transparent shadow-lg scale-[1.02]`
+                          : "border-gray-200 bg-white hover:bg-gray-50 hover:shadow-sm"
                       }`}
                     >
                       {paymentMethod === method.id && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-white/30 rounded-full flex items-center justify-center backdrop-blur-sm">
                           <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                         </div>
                       )}
-                      <div className={`w-10 h-7 ${method.badgeColor} rounded-lg flex items-center justify-center shadow-sm`}>
-                        <span className="text-[10px] font-black text-white tracking-wider">{method.badge}</span>
+                      <div className={`w-10 h-7 ${method.color} rounded-lg flex items-center justify-center shadow-sm ${paymentMethod === method.id ? "opacity-90" : ""}`}>
+                        <span className="text-[10px] font-black text-white tracking-wider">{method.id === "card" ? "CC" : method.id.toUpperCase()}</span>
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-800">{method.label.split("(")[0]}</p>
-                        <p className="text-[10px] text-gray-500 mt-0.5">{method.desc}</p>
+                        <p className={`text-sm font-bold ${paymentMethod === method.id ? "text-white" : "text-gray-800"}`}>{method.label}</p>
+                        <p className={`text-[10px] mt-0.5 ${paymentMethod === method.id ? "text-white/80" : "text-gray-500"}`}>{method.desc}</p>
                       </div>
                     </button>
                   ))}
